@@ -56,13 +56,29 @@ function insert_posts_shortcode( $atts ) {
         $bw_post_list = "<div class='" . sanitize_html_class( $atts['class'], 'bw-post-list' ) . "'>";
         while ( $bw_query->have_posts() ) {
             $bw_query->the_post();
-            // do something
+            //get the classes for posts to give more control
             $sPostClasses = implode( ' ', get_post_class() );
-            $bw_post_list .= "<article class='" . $sPostClasses . "'>" . get_the_title() . "</article>";
+            //put together the markup for the posts
+            $bw_post_list .= "<article class='" . $sPostClasses . "'>" . 
+                "<header>" . 
+                    "<h2 class=\"entry-title\">" . 
+                        "<a href=\"" . get_the_permalink() . "\" title=\"" . get_the_title() . "\" rel=\"bookmark\">" . 
+                            get_the_title() . 
+                        "</a>" . 
+                    "</h2>" . 
+                    "<a href=\"" . get_edit_post_link() . "\" class=\"post-edit-link\">Edit</a>" . 
+                "</header>" . 
+                "<div class=\"entry-summary\">" . 
+                    "<a href=\"" . get_the_permalink() . "\" title=\"" . get_the_title() . "\" class=\"thumbnail-link\">" . 
+                        get_the_post_thumbnail() . 
+                    "</a>" . 
+                    get_the_excerpt() . 
+                "</div>" . 
+            "</article>";
         }
         $bw_post_list .= "</div>";
     } else {
-        // no posts found
+        //put together the markup for no posts found
         $bw_post_list = "<div class='" . sanitize_html_class( $atts['class'], 'bw-post-list' ) . "'><article class='nopost'>There are no posts to display.</article></div>";
     }
 
