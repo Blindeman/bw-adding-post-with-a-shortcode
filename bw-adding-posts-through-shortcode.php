@@ -4,11 +4,12 @@
  * Plugin URI: https://blindemanwebsites.com/today-i-learned/
  * Github plugin URI: https://github.com/Blindeman/bw-adding-posts-through-shortcode
  * Description: A WordPress plugin to add posts or custom post types to a page with the shortcode [insert_posts posttype="post" howmany="5" class="bw-post-list"]
- * Version: 0.0.1
+ * Version: 0.0.2
  * Author: Naomi Blindeman
  * Author URI: https://blindemanwebsites.com/
  * License: GNU General Public License 3.0
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
+ * Text Domain: bw-adding-posts-through-shortcode
  */
 
 defined( 'ABSPATH' ) or die;
@@ -58,7 +59,7 @@ function insert_posts_shortcode( $atts ) {
             $bw_query->the_post();
             //get the classes for posts to give more control
             $sPostClasses = implode( ' ', get_post_class() );
-            //put together the markup for the posts
+            //put together the html for the posts
             $bw_post_list .= "<article class='" . $sPostClasses . "'>" . 
                 "<header>" . 
                     "<h2 class=\"entry-title\">" . 
@@ -66,20 +67,20 @@ function insert_posts_shortcode( $atts ) {
                             get_the_title() . 
                         "</a>" . 
                     "</h2>" . 
-                    "<a href=\"" . get_edit_post_link() . "\" class=\"post-edit-link\">Edit</a>" . 
+                    "<a href=\"" . get_edit_post_link() . "\" class=\"post-edit-link\">" . __( 'Edit', 'bw-adding-posts-through-shortcode' ) . "</a>" . 
                 "</header>" . 
+                "<a href=\"" . get_the_permalink() . "\" title=\"" . get_the_title() . "\" class=\"thumbnail-link\">" . 
+                    get_the_post_thumbnail() . 
+                "</a>" . 
                 "<div class=\"entry-summary\">" . 
-                    "<a href=\"" . get_the_permalink() . "\" title=\"" . get_the_title() . "\" class=\"thumbnail-link\">" . 
-                        get_the_post_thumbnail() . 
-                    "</a>" . 
                     get_the_excerpt() . 
                 "</div>" . 
             "</article>";
         }
         $bw_post_list .= "</div>";
     } else {
-        //put together the markup for no posts found
-        $bw_post_list = "<div class='" . sanitize_html_class( $atts['class'], 'bw-post-list' ) . "'><article class='nopost'>There are no posts to display.</article></div>";
+        //put together the html for no posts found
+        $bw_post_list = "<div class='" . sanitize_html_class( $atts['class'], 'bw-post-list' ) . "'><article class='nopost'>" . __( 'There are no posts to display.', 'bw-adding-posts-through-shortcode') . "</article></div>";
     }
 
     // Restore original Post Data
