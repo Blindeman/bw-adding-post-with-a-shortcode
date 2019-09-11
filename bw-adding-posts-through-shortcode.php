@@ -4,7 +4,7 @@
  * Plugin URI: https://blindemanwebsites.com/today-i-learned/
  * Github plugin URI: https://github.com/Blindeman/bw-adding-posts-through-shortcode
  * Description: A WordPress plugin to add posts or custom post types to a page with the shortcode [insert_posts posttype="post" howmany="5" class="bw-post-list"]. Compatible with https://github.com/afragen/github-updater
- * Version: 0.0.2
+ * Version: 0.0.3
  * Author: Naomi Blindeman
  * Author URI: https://blindemanwebsites.com/
  * License: GNU General Public License 3.0
@@ -31,14 +31,14 @@ function insert_posts_shortcode( $atts ) {
     if( strpos( $atts['posttype'], ',') !== FALSE ){
         //if there is more than one post_type
         $aPosttype = explode( ',', $atts['posttype'] );
-        //pushing it through sanitize_title() for the sake of cheap validation
+        //pushing it through sanitize_title() for the sake of cheap sanitation
         //with a fallback of post
         foreach( $aPosttype as $key => $value ){
             $aPosttype[$key] = sanitize_title( $value, 'post' );
         }
     } else {
         //if there is only one post_type
-        //pushing it through sanitize_title() for the sake of cheap validation
+        //pushing it through sanitize_title() for the sake of cheap sanitation
         //with a fallback of post
         $aPosttype = array( sanitize_title( $atts['posttype'], 'post') );
     }
@@ -67,7 +67,7 @@ function insert_posts_shortcode( $atts ) {
                             get_the_title() . 
                         "</a>" . 
                     "</h2>" . 
-                    "<a href=\"" . get_edit_post_link() . "\" class=\"post-edit-link\">" . __( 'Edit', 'bw-adding-posts-through-shortcode' ) . "</a>" . 
+                    ( current_user_can( 'edit_pages' ) ? "<a href=\"" . get_edit_post_link() . "\" class=\"post-edit-link\">" . __( 'Edit', 'bw-adding-posts-through-shortcode' ) . "</a>" : "" ) . 
                 "</header>" . 
                 "<a href=\"" . get_the_permalink() . "\" title=\"" . get_the_title() . "\" class=\"thumbnail-link\">" . 
                     get_the_post_thumbnail() . 
