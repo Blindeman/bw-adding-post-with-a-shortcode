@@ -3,8 +3,8 @@
  * Plugin Name: BW Adding Posts Through a Shortcode
  * Plugin URI: https://blindemanwebsites.com/today-i-learned/
  * Github plugin URI: https://github.com/Blindeman/bw-adding-posts-through-shortcode
- * Description: A WordPress plugin to add posts or custom post types to a page with the shortcode [insert_posts posttype="post" howmany="5" class="bw-post-list"]. Compatible with https://github.com/afragen/github-updater
- * Version: 0.0.3
+ * Description: A WordPress plugin to add posts or custom post types to a page with the shortcode [insert_posts posttype="post" howmany="5" class="bw-post-list" entryheader="h2" date="no"]. Compatible with https://github.com/afragen/github-updater
+ * Version: 0.0.4
  * Author: Naomi Blindeman
  * Author URI: https://blindemanwebsites.com/
  * License: GNU General Public License 3.0
@@ -23,6 +23,8 @@ function insert_posts_shortcode( $atts ) {
 			'posttype' => 'post',
 			'howmany' => 5,
 			'class' => 'bw-post-list',
+            'entryheader' => 'h2',
+            'date' => 'no'
 		),
 		$atts,
 		'insert_posts'
@@ -62,11 +64,12 @@ function insert_posts_shortcode( $atts ) {
             //put together the html for the posts
             $bw_post_list .= "<article class='" . $sPostClasses . "'>" . 
                 "<header>" . 
-                    "<h2 class=\"entry-title\">" . 
+                    "<" . sanitize_html_class( $atts['entryheader'], 'h2' ) . " class=\"entry-title\">" . 
                         "<a href=\"" . get_the_permalink() . "\" title=\"" . get_the_title() . "\" rel=\"bookmark\">" . 
                             get_the_title() . 
                         "</a>" . 
-                    "</h2>" . 
+                    "</" . sanitize_html_class( $atts['entryheader'], 'h2' ) . ">" . 
+                    ( $atts['date'] === "yes" ? "<div class=\"entry-meta\"><span class=\"entry-date\">" . get_the_time( get_option( 'date_format' ) ) . "</span></div>" : "" ) .
                     ( current_user_can( 'edit_pages' ) ? "<a href=\"" . get_edit_post_link() . "\" class=\"post-edit-link\">" . __( 'Edit', 'bw-adding-posts-through-shortcode' ) . "</a>" : "" ) . 
                 "</header>" . 
                 "<a href=\"" . get_the_permalink() . "\" title=\"" . get_the_title() . "\" class=\"thumbnail-link\">" . 
