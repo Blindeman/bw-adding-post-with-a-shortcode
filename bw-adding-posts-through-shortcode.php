@@ -3,7 +3,10 @@
  * Plugin Name: BW Adding Posts Through a Shortcode
  * Plugin URI: https://blindemanwebsites.com/today-i-learned/
  * Github plugin URI: https://github.com/Blindeman/bw-adding-posts-through-shortcode
- * Description: A WordPress plugin to add posts or custom post types to a page with the shortcode [insert_posts posttype="post" howmany="5" class="bw-post-list" entryheader="h2" date="no"]. Compatible with https://github.com/afragen/github-updater
+ * Description: A WordPress plugin to add posts or custom post types to a page with the shortcode
+ [insert_posts posttype="post" howmany="5" class="bw-post-list" entryheader="h2" date="no"].  
+ entryheader can take any valid HTML tag and date takes yes or no.  
+ Compatible with https://github.com/afragen/github-updater
  * Version: 0.0.4
  * Author: Naomi Blindeman
  * Author URI: https://blindemanwebsites.com/
