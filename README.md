@@ -1,7 +1,7 @@
 # bw-adding-posts-through-a-shortcode
 WordPress plugin  
 Tested up to: 5.3.2  
-Stable tag: 0.0.4  
+Stable tag: 0.0.5  
 License: GNU General Public License 3.0  
 License URI: https://www.gnu.org/licenses/gpl-3.0.html  
 
@@ -12,6 +12,9 @@ entryheader can take any valid HTML tag and date takes yes or no.
 Compatible with https://github.com/afragen/github-updater
 
 ## Changelog
+
+### 0.0.5 / December 20, 2019
+* Fixed the disappearing plugin description
 
 ### 0.0.4 / December 20, 2019
 * Added two more options: entryheader="h2" and date="no"

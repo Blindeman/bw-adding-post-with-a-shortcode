@@ -1,3 +1,6 @@
+### 0.0.5 / December 20, 2019
+* Fixed the disappearing plugin description
+
 ### 0.0.4 / December 20, 2019
 * Added two more options: entryheader="h2" and date="no"
 
