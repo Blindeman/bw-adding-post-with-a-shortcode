@@ -4,7 +4,7 @@
  * Plugin URI: https://blindemanwebsites.com/today-i-learned/
  * Github plugin URI: https://github.com/Blindeman/bw-adding-posts-through-shortcode
  * Description: A WordPress plugin to add posts or custom post types to a page with the shortcode [insert_posts posttype="post" howmany="5" class="bw-post-list" entryheader="h2" date="no"]. entryheader can take any valid HTML tag and date takes yes or no. Compatible with https://github.com/afragen/github-updater
- * Version: 0.0.5
+ * Version: 0.0.6
  * Author: Naomi Blindeman
  * Author URI: https://blindemanwebsites.com/
  * License: GNU General Public License 3.0
@@ -24,7 +24,8 @@ function insert_posts_shortcode( $atts ) {
 			'howmany' => 5,
 			'class' => 'bw-post-list',
             'entryheader' => 'h2',
-            'date' => 'no'
+            'date' => 'no',
+            'featuredimage' => 'yes'
 		),
 		$atts,
 		'insert_posts'
@@ -72,9 +73,9 @@ function insert_posts_shortcode( $atts ) {
                     ( $atts['date'] === "yes" ? "<div class=\"entry-meta\"><span class=\"entry-date\">" . get_the_time( get_option( 'date_format' ) ) . "</span></div>" : "" ) .
                     ( current_user_can( 'edit_pages' ) ? "<a href=\"" . get_edit_post_link() . "\" class=\"post-edit-link\">" . __( 'Edit', 'bw-adding-posts-through-shortcode' ) . "</a>" : "" ) . 
                 "</header>" . 
-                "<a href=\"" . get_the_permalink() . "\" title=\"" . get_the_title() . "\" class=\"thumbnail-link\">" . 
+                ( $atts['featuredimage'] === "yes" ? "<a href=\"" . get_the_permalink() . "\" title=\"" . get_the_title() . "\" class=\"thumbnail-link\">" . 
                     get_the_post_thumbnail() . 
-                "</a>" . 
+                "</a>" : "" ) . 
                 "<div class=\"entry-summary\">" . 
                     get_the_excerpt() . 
                 "</div>" . 

@@ -1,3 +1,6 @@
+### 0.0.6 / December 28, 2019
+* Give option to choose whether to show a featured image
+
 ### 0.0.5 / December 20, 2019
 * Fixed the disappearing plugin description
 
