@@ -3,8 +3,8 @@
  * Plugin Name: BW Adding Posts Through a Shortcode
  * Plugin URI: https://blindemanwebsites.com/today-i-learned/
  * Github plugin URI: https://github.com/Blindeman/bw-adding-posts-through-shortcode
- * Description: A WordPress plugin to add posts or custom post types to a page with the shortcode [insert_posts posttype="post" howmany="5" class="bw-post-list" entryheader="h2" date="no"]. entryheader can take any valid HTML tag and date takes yes or no. Compatible with https://github.com/afragen/github-updater
- * Version: 0.0.6
+ * Description: A WordPress plugin to add posts or custom post types to a page with the shortcode [insert_posts posttype="post" howmany="5" class="bw-post-list" entryheader="h2" date="no" featuredimage="yes" imagesize="post-thumbnail" summary="summary"]. entryheader can take any valid HTML tag and date and featured image takes yes or no. imagesize, standard, is set to your theme's post-thumbnail, but you can use any other named image size. Summary takes the option summary or content. Compatible with https://github.com/afragen/github-updater
+ * Version: 0.1.0
  * Author: Naomi Blindeman
  * Author URI: https://blindemanwebsites.com/
  * License: GNU General Public License 3.0
@@ -25,7 +25,9 @@ function insert_posts_shortcode( $atts ) {
 			'class' => 'bw-post-list',
             'entryheader' => 'h2',
             'date' => 'no',
-            'featuredimage' => 'yes'
+            'featuredimage' => 'yes',
+            'imagesize' => 'post-thumbnail',
+            'summary' => 'summary'
 		),
 		$atts,
 		'insert_posts'
@@ -74,11 +76,14 @@ function insert_posts_shortcode( $atts ) {
                     ( current_user_can( 'edit_pages' ) ? "<a href=\"" . get_edit_post_link() . "\" class=\"post-edit-link\">" . __( 'Edit', 'bw-adding-posts-through-shortcode' ) . "</a>" : "" ) . 
                 "</header>" . 
                 ( $atts['featuredimage'] === "yes" ? "<a href=\"" . get_the_permalink() . "\" title=\"" . get_the_title() . "\" class=\"thumbnail-link\">" . 
-                    get_the_post_thumbnail() . 
+                    get_the_post_thumbnail( null, sanitize_title( $atts['imagesize'], 'post-thumbnail' ) ) . 
                 "</a>" : "" ) . 
-                "<div class=\"entry-summary\">" . 
+                ( $atts['summary'] === "summary" ? "<div class=\"entry-summary\">" . 
                     get_the_excerpt() . 
-                "</div>" . 
+                "</div>" : "" ) .
+                ( $atts['summary'] === "content" ? "<div class=\"entry-content\">" . 
+                    get_the_content() . 
+                "</div>" : "" ) .
             "</article>";
         }
         $bw_post_list .= "</div>";
