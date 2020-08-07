@@ -3,8 +3,8 @@
  * Plugin Name: BW Adding Posts Through a Shortcode
  * Plugin URI: https://blindemanwebsites.com/today-i-learned/
  * Github plugin URI: https://github.com/Blindeman/bw-adding-posts-through-shortcode
- * Description: A WordPress plugin to add posts or custom post types to a page with the shortcode [insert_posts posttype="post" howmany="5" class="bw-post-list" entryheader="h2" date="no" featuredimage="yes" imagesize="post-thumbnail" summary="summary"]. entryheader can take any valid HTML tag and date and featured image takes yes or no. imagesize, standard, is set to your theme's post-thumbnail, but you can use any other named image size. Summary takes the option summary or content. Compatible with https://github.com/afragen/github-updater
- * Version: 0.1.0
+ * Description: A WordPress plugin to add posts or custom post types to a page with the shortcode [insert_posts posttype="post" howmany="5" class="bw-post-list" entryheader="h2" date="no" featuredimage="yes" imagesize="post-thumbnail" summary="summary" cat="" author="no" orderby="date" order="DESC"]. entryheader can take any valid HTML tag and date and featured image takes yes or no. imagesize, standard, is set to your theme's post-thumbnail, but you can use any other named image size. Summary takes the option summary or content. Compatible with https://github.com/afragen/github-updater
+ * Version: 0.2.0
  * Author: Naomi Blindeman
  * Author URI: https://blindemanwebsites.com/
  * License: GNU General Public License 3.0
@@ -27,7 +27,11 @@ function insert_posts_shortcode( $atts ) {
             'date' => 'no',
             'featuredimage' => 'yes',
             'imagesize' => 'post-thumbnail',
-            'summary' => 'summary'
+			'summary' => 'summary',
+			'cat' => '',
+			'author' => 'no',
+			'orderby' => 'date',
+			'order' => 'DESC'
 		),
 		$atts,
 		'insert_posts'
@@ -46,12 +50,45 @@ function insert_posts_shortcode( $atts ) {
         //pushing it through sanitize_title() for the sake of cheap sanitation
         //with a fallback of post
         $aPosttype = array( sanitize_title( $atts['posttype'], 'post') );
-    }
+	}
+
+	if( strpos( $atts['cat'], ',') !== FALSE ){
+		//if there is more than one category id
+		$aCategory = explode( ',', $atts['cat'] );
+		//making sure they're all integers
+		foreach( $aCategory as $key => $value ){
+			$aCategory[$key] = intval( $value );
+		}
+	} elseif( $atts['cat'] !== '' ) {
+		//if there is only one post_type
+		//make sure it's an integer
+		$aCategory = array( intval( $atts['cat'] ) );
+	} else {
+		$aCategory = '';
+	}
+
+	//set up an array with all possible values of orderby
+	$aOrderby = array( 'none', 'ID', 'author', 'title', 'name', 'type', 'date', 'modified', 'parent', 'rand', 'comment_count', 'menu_order' );
+	//check wether the given value is in the array
+	if( in_array( $atts['orderby'], $aOrderby ) ){
+		$sOrderby = $atts['orderby'];
+	} else {
+		$sOrderby = 'date';
+	}
+	
+	if( $atts['order'] == 'ASC'){
+		$sOrder = $atts['order'];
+	} else {
+		$sOrder = 'DESC';
+	}
     
     // WP_Query arguments
     $args = array(
-        'post_type'              => $aPosttype,
-        'posts_per_page'         => intval( $atts['howmany'] ),
+        'post_type' => $aPosttype,
+		'posts_per_page' => intval( $atts['howmany'] ),
+		'cat' => $aCategory,
+		'orderby' => $sOrderby,
+		'order' => $sOrder
     );
 
     // The Query
@@ -72,7 +109,8 @@ function insert_posts_shortcode( $atts ) {
                             get_the_title() . 
                         "</a>" . 
                     "</" . sanitize_html_class( $atts['entryheader'], 'h2' ) . ">" . 
-                    ( $atts['date'] === "yes" ? "<div class=\"entry-meta\"><span class=\"entry-date\">" . get_the_time( get_option( 'date_format' ) ) . "</span></div>" : "" ) .
+					( $atts['date'] === "yes" ? "<div class=\"entry-meta\"><span class=\"entry-date\">" . get_the_time( get_option( 'date_format' ) ) . "</span></div>" : "" ) .
+					( $atts['author'] === "yes" ? "<span class=\"author vcard\">" . get_the_author_posts_link() . "</span>" : "") . 
                     ( current_user_can( 'edit_pages' ) ? "<a href=\"" . get_edit_post_link() . "\" class=\"post-edit-link\">" . __( 'Edit', 'bw-adding-posts-through-shortcode' ) . "</a>" : "" ) . 
                 "</header>" . 
                 ( $atts['featuredimage'] === "yes" ? "<a href=\"" . get_the_permalink() . "\" title=\"" . get_the_title() . "\" class=\"thumbnail-link\">" . 
